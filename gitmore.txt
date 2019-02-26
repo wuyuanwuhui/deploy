@@ -1,0 +1,66 @@
+
+管理员：
+
+本地仓库  ---- > 内网环境仓库 1
+	  ---- > 生产环境仓库 2
+
+rsync  
+
+可以使用scp、ssh等方式来传输文件，当然也可以通过直接的socket连接。
+
+post-receive
+
+git remote add ...
+git push origin remote
+
+git 多个远程仓库使用： https://my.oschina.net/looly/blog/311573
+
+1. git clone git@abc.git.com:root/test1.git 本地仓库
+
+2. GitHub 仓库:  git@github.com:loveyouforeve100/test.git
+
+建立github仓库分支
+
+git remote add staging git@github.com:loveyouforeve100/test.git
+
+git checkout -b staging staging/master
+
+3. 从github分支拉代码
+
+git fetch staging
+
+4. 提交到github分支
+
+git push staging staging:master
+
+git push staging master:master
+
+5. 合并其他分支 然后推送到github
+
+此情况适合管理员管理本地代码，然后提交代码到生产环境
+
+git checkout master
+
+git merge dev
+
+git push
+
+-----------------------------------------------------------------
+
+ git remote add github git@github.com:loveyouforeve100/test1.git
+
+ git push github master:master
+
+
+ 一条命令全部push
+可以写个sh脚本处理
+搜索发现还有另一种方法,
+即在一个
+ref下设置多个url
+通过git remote set-url --add origin git@git.coding.net:mbinary/netease-cached-music.git
+来关联新的远程仓库,
+可以进入.git/config发现origin下新加入了这个远程仓库的url
+
+
+https://www.jianshu.com/p/ac9568983291
+

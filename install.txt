@@ -1,0 +1,98 @@
+
+
+环境配置
+
+https://blog.csdn.net/hel12he/article/details/51069269
+
+
+------------------------------------------------------
+
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 3306 -j ACCEPT
+
+
+rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+
+yum list --enablerepo=remi --enablerepo=remi-php72 | grep php72
+
+yum install --enablerepo=remi --enablerepo=remi-php72 php php-opcache php-pecl-apcu php-devel php-mbstring php-mcrypt php-mysqlnd php-pecl-xdebug php-pdo php-pear php-fpm php-cli php-xml php-bcmath php-process php-gd php-common php-json php-imap php-pecl-redis php-pecl-memcached php-pecl-mongodb php-intl
+
+
+
+root vagrant
+
+mysql -uroot -p
+
+mysql
+
+root: vagrant!2018
+yjkj4603@zpm%#
+
+show grants for root;
+
+grant all privileges on *.* to 'root'@'%' identified by 'yjkj4603@zpm%#';
+
+grant all privileges on *.* to 'root'@'10.0.2.2' identified by 'yjkj4603@zpm%#';
+
+revoke all privileges on *.* from 'root'@'%';
+
+grant all privileges on *.* to 'homestead'@'%' identified by '2018secret!!!';
+
+flush privileges;
+
+grant all privileges on *.* to 'root'@'192.168.20.180' identified by 'xslroot';
+
+yum-config-manager --add-repo  http://mirrors.aliyun.com/repo/Centos-7.repo
+
+
+------------------------------------------------------
+
+admin
+
+666666
+
+cyx
+
+
+$ systemctl stop firewalld.service 
+$ systemctl disable firewalld.service #防止开机启动
+
+
+systemctl stop iptables.service 
+systemctl disable iptables.service 
+
+systemctl enable redis
+
+
+yjkj4603@zpm%#
+
+
+update user set password=Password('yjkj4603@zpm%#') Where user='root';
+
+flush privileges;
+
+
+------------------------------------------------------
+
+yum list --enablerepo=remi --enablerepo=remi-php72 | grep php72
+
+yum install --enablerepo=remi --enablerepo=remi-php72 php php-opcache php-pecl-apcu php-devel php-mbstring php-mcrypt php-mysqlnd php-pecl-xdebug php-pdo php-pear php-fpm php-cli php-xml php-bcmath php-process php-gd php-common php-json php-imap php-pecl-redis php-pecl-memcached php-pecl-mongodb
+
+------------------------------------------------------
+
+laravel
+
+111111
+
+laravel@laravel.com
+
+docker run -t -i centos:7.3.1611 /bin/bash
+
+
+
+
+
+
+
+
