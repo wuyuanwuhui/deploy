@@ -64,3 +64,6 @@ ref下设置多个url
 
 https://www.jianshu.com/p/ac9568983291
 
+GitHub上fork别人打代码后如何保持和原作者同步的更新 注意：不会覆盖自己新更新的代码
+
+https://blog.csdn.net/xingqingly/article/details/83823800

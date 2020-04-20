@@ -26,7 +26,7 @@ mysql -uroot -p
 
 mysql
 
-root: vagrant!2018
+root: vagrant2018
 yjkj4603@zpm%#
 
 show grants for root;
@@ -45,6 +45,39 @@ grant all privileges on *.* to 'root'@'192.168.20.180' identified by 'xslroot';
 
 yum-config-manager --add-repo  http://mirrors.aliyun.com/repo/Centos-7.repo
 
+
+/usr/bin/mysqladmin -u root -p shutdown
+/usr/bin/mysqld_safe &
+
+由于用的是mariadb 所以启动应该这样
+systemctl restart mariadb.service
+
+------------------------------------------------------
+
+create user 'develop'@'10.0.2.2' identified by '2020#todo!up';
+grant all privileges on *.* to 'develop'@'10.0.2.2' identified by '2020#todo!up';
+flush privileges;
+
+revoke all privileges on *.* from 'develop'@'10.0.2.2';
+grant all privileges on yii2.* to 'develop'@'10.0.2.2' identified by '2020#todo!up';
+
+grant all privileges on yii2_admin.* to 'develop'@'10.0.2.2' identified by '2020#todo!up';
+grant all privileges on yii2_admin.* to 'develop'@'localhost' identified by '2020#todo!up';
+
+
+drop user zhangsan@'%';
+update mysql.user set password = password('zhangsannew') where user = 'zhangsan' and host = '%';
+flush privileges;
+
+
+alter database yii2 character set utf8;
+
+ALTER TABLE 表名 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci
+
+alter table role_item_ids alter column itemids  set default '';
+
+
+CONSTRAINT `auth_item_child_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
 
 ------------------------------------------------------
 
@@ -90,9 +123,148 @@ laravel@laravel.com
 docker run -t -i centos:7.3.1611 /bin/bash
 
 
+ElasticSearch分布式多用户的全文搜索引擎，是当前流行的企业级搜索引擎。
 
 
+如果只有一个域名或者一个IP，但要部署多个后台或前台，那么通常要web服务器nginx监听多个端口可以达到目的。
+
+------------------------------------------------------
+
+yum list installed | grep ruby 查看安装软件
+rpm -qa
+
+------------------------------------------------------
 
 
+configure: error: Please reinstall the libzip distribution
+
+yum remove libzip
+
+curl-O https://libzip.org/download/libzip-1.5.1.tar.gz
+
+　　tar -zxvf libzip-1.5.1.tar.gz
+
+　　cd libzip-1.5.1
+
+　　mkdir build
+
+　　cd build
+
+　　cmake ..
+
+　　make && make install
+
+注意：如果提示cmake版本过低，需新版本，则需要重新安装cmake。
+
+wget https://cmake.org/files/v3.9/cmake-3.9.2.tar.gz
+
+tar zxvf  cmake-3.9.2.tar.gz
+cd cmake-3.9.2
+./configure
+make
+sudo make install
+
+cmake --version
+
+------------------------------------------------------
 
 
+/usr/bin/php
+/usr/bin/php-config
+
+cd zip-1.18.2
+/usr/bin/phpize 
+./configure --with-php-config=/usr/bin/php-config
+make && make install
+
+
+------------------------------------------------------
+
+http://pecl.php.net/get/zip-1.18.2.tgz
+
+curl 'http://pecl.php.net/get/zip-1.18.2.tgz' -o zip-1.18.2.tgz
+
+pecl install zip-1.18.2.tgz
+
+------------------------------------------------------
+
+Please reinstall the libzip distribution
+
+https://cmake.org/files/v3.10/
+
+wget https://cmake.org/files/v3.10/cmake-3.10.0.tar.gz
+
+------------------------------------------------------
+
+echo "extension=zip.so;" >> /etc/php.ini
+
+PHP Warning: PHP Startup: Unable to load dynamic library 'zip.so' libzip.so.5: cannot open 错误导致安装PHP扩展失败原因
+执行两条命令可以临时解决
+ldconfig /usr/local/lib 
+ldconfig /usr/local/lib64
+
+终极解决解决方案： https://www.geek-share.com/detail/2773553168.html
+
+include /usr/local/lib64
+
+/usr/lib64/php/modules/
+
+composer 安装 izyue 这个包一直报错 
+
+yiisoft/yii2 2.0.9 requires bower-asset/jquery 2.2.*@stable | 2.1.*@stable | package not found
+
+才发现是 composer-asset-plugin 版本的问题 按照github上执行 composer require "fxp/composer-asset-plugin:~1.1.1" 是无效
+
+所以执行这条 composer global require "fxp/composer-asset-plugin"
+
+再安装 composer require izyue/yii2-admin "*"
+或者compser install 即可
+
+
+设置中国镜像 composer config -g repo.packagist composer https://packagist.phpcomposer.com
+
+解除中国镜像 composer config -g --unset repos.packagist
+
+------------------------------------------------------
+
+网站风格 网站主题  网站模板风格 网站UI
+
+php 分类网站  后台 功能
+
+
+------------------------------------------------------
+
+
+nginx 问题：
+
+    location /admin {
+        alias /vagrant/www/yii2/admin_test;
+        index index.php index.htm;
+        #try_files $uri /admin_test/index.php?$args;
+    }
+
+一定要注意php配置问题
+
+    try_files $uri $uri/ /admin_test/index.php;
+
+
+    try_files $uri $uri/ /index.php$is_args$args;
+
+
+location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_pass 127.0.0.1:9000;
+      
+
+    location ~* ^/(public/bd)/.*.(php|php5)$ {
+         deny all; 
+}
+
+
+   location ~* ^/(admin)/ \.php$ {
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_pass 127.0.0.1:9000;
+        try_files $uri =404;
+    }

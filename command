@@ -4,6 +4,15 @@ vt-x/amd-v 硬件加速在您的系统中不可用 你的 64 位虚拟机将无法检测到64-位处理器
 
 # 环境搭建参考 https://blog.csdn.net/hel12he/article/details/51107236 
 
+
+
+tar zxvf nginx-1.5.0.tar.gz
+cd nginx-0.8.46/
+./configure --user=www --group=www --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module
+make && make install
+cd ../
+
+
 rpm -ivh https://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-11.noarch.rpm   
 
 rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
@@ -107,6 +116,10 @@ git log --oneline --graph #显示主分支和自分支git日志 （前面会多个星号）
 git remote -v #查看关联情况
 git remote remove origin
 git remote add origin git@github.com:wuyuanwuhui/yii2.git
+
+git push到GitHub的时候遇到! [rejected] master -> master (non-fast-forward)的问题
+
+可以使用强行拉去代码同步消除差异，然后再提交即可
 
 git 强制拉取远程代码覆盖本地 
 
@@ -264,3 +277,28 @@ Route::apiResources([
 ]);
 
 资源控制器
+
+-------------------------------------------------------------------------------------------
+
+mysql 连接池https://blog.csdn.net/yp4822063/article/details/42521215?depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-1&utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-1
+
+
+php 和 golang 性能
+
+php opcache 开启后性能
+
+
+一群傻×，嘚吧嘚吧的，狗屁不懂在那里胡说，对比网络，编译丢失的性能完全可以忽略不计，楼主你敢试试用nginx+php-fpm，然后用长连接去连接mysql和redis，看看速度会比golang慢？别傻了，php用了长连接之后在php-fpm下面就相当于连接池了，例如你开启了static 400个php-fpm，那么就初始化400个连接到redis或者mysql，永远不断开，这就是连接池，速度和golang是一样的，稳定性还更高
+
+
+sso 单点登录
+
+
+-------------------------------------------------------------------------------------------
+
+mysql使用truncate截断带有外键的表时报错--解决方案 https://www.cnblogs.com/hougang/p/mysql_truncate.html
+
+SET FOREIGN_KEY_CHECKS=0;  
+
+
+php yii genitem/run --search-path='backend/modules'  use-cache=0
