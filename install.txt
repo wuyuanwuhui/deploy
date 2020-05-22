@@ -79,6 +79,13 @@ alter table role_item_ids alter column itemids  set default '';
 
 CONSTRAINT `auth_item_child_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
 
+
+
+ mysqldump [options] --databases db_name ...
+
+ # 备份指定数据库排除某些表
+ mysqldump -uroot -p test --ignore-table=test.t1 --ignore-table=test.t2 > /backup/mysqldump/test2.db
+
 ------------------------------------------------------
 
 admin

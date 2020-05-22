@@ -1,0 +1,5 @@
+
+什么是MQ
+
+消息队列（Message Queue，简称MQ），从字面意思上看，本质是个队列，FIFO先入先出，只不过队列中存放的内容是message而已。
+其主要用途：不同进程Process/线程Thread之间通信。

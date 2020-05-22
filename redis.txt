@@ -1,0 +1,215 @@
+
+wget http://download.redis.io/releases/redis-6.0.0.tar.gz
+
+tar xzf redis-2.8.17.tar.gz
+
+cd redis-2.8.17
+
+make
+
+cd src
+find . -type f -executable
+
+./redis-server  ../redis.conf
+
+#systemctl enable /usr/local/bin/redis-server  /usr/local/redis-6.0.0/redis.conf
+
+./redis-cli
+
+ln -s /usr/local/redis-6.0.0/src/redis-server /usr/local/bin/redis-server
+
+ln -s /usr/local/redis-6.0.0/src/redis-cli /usr/local/bin/redis-cli
+
+
+set foo bar
+get foo
+
+--------------------------------------------------------------------------------
+CONFIG
+
+CONFIG GET CONFIG_SETTING_NAME
+CONFIG GET loglevel
+CONFIG GET *
+
+config get bind
+
+安装redis-6.0.1报错server.c:xxxx:xx: error: ‘xxxxxxxx’ has no member named ‘xxxxx’
+
+https://blog.csdn.net/hello_cmy/article/details/106062327
+
+要重新打开 xshell 才行
+
+
+--------------------------------------------------------------------------------
+
+HMSET arr id 100 name "Dene"
+hmget arr id
+hmget arr name
+
+userlist # list 
+
+lpush userlist no1
+lpush userlist no2
+lpush userlist no3 no4 no5
+
+lrange userlist 0 5
+
+
+Set（集合）# 栈
+Redis 的 Set 是 string 类型的无序集合。
+集合是通过哈希表实现的，所以添加，删除，查找的复杂度都是 O(1)。
+
+sadd ss redis
+sadd ss mongodb
+sadd ss mysql
+sadd ss mongodb
+smembers ss
+
+注意：以上实例中 rabitmq 添加了两次，但根据集合内元素的唯一性，第二次插入的元素将被忽略。
+
+Redis zset 和 set 一样也是string类型元素的集合,且不允许重复的成员。
+
+不同的是每个元素都会关联一个double类型的分数。redis正是通过分数来为集合中的成员进行从小到大的排序。
+
+zset的成员是唯一的,但分数(score)却可以重复。
+
+zadd sset 10 redis
+zadd sset 20 mysql
+zadd sset 50 qq
+
+ZRANGEBYSCORE sset 0 100 
+zrangebyscore sset 0 100
+
+redis-cli -h localhost -p 6379 -a password 
+redis-cli --raw #避免中文乱码
+
+--------------------------------------------------------------------------------
+
+# String类操作命令
+
+keys * # show all keys
+KEYS pattern
+
+exists name
+EXPIRE key seconds
+getrange name 0 1
+getset name "July"
+mset uid 3 age 30
+mget name id
+SETEX mykey 60 redis
+mset 
+strlen name
+
+msetnx month 5 year 2020 month 6 year 2021
+incr uid
+incrby uid 100
+DECR key
+DECRBY key decrement
+
+append name " Zhang"
+
+--------------------------------------------------------------------------------
+# Hash
+hmset user-profile name "zhang" uid 1 place "CD" job "Engine" time 3
+
+hgetall user-profile
+
+hdel user-profile time
+hexists user-profile time
+hget  user-profile time
+hkeys user-profile # 键
+HVALS user-profile # 值
+hlen user-profile
+hmget user-profile name
+hset user-profile score 300
+
+hsetnx 
+
+Redis HSCAN 命令 # 匹配
+
+
+--------------------------------------------------------------------------------
+
+# List
+lrange userlist 0 1
+blpop userlist 10
+brpop userlist 10
+lindex userlist 2
+linsert userlist before no3 "no100"
+
+--------------------------------------------------------------------------------
+
+#Set
+scard ss
+sdiff ss ss2
+sdiff ss2 ss
+sdiffstore ss3 ss ss2
+smembers ss3
+
+sinter ss ss2
+sismember ss nosql
+
+sunion ss ss2
+
+sscan ss 0 match m*
+
+
+--------------------------------------------------------------------------------
+
+reids log 查看
+
+dump.rdb 查看
+
+
+HyperLogLog 
+
+--------------------------------------------------------------------------------
+
+#bit 位运算 计算留存率
+
+--------------------------------------------------------------------------------
+
+subscribe HereNotice
+
+publish HereNotice "I am from client1 "
+publish HereNotice "I am from client1 again"
+
+--------------------------------------------------------------------------------
+
+Redis 脚本使用 Lua 解释器来执行脚本 Redis 2.6 版本通过内嵌支持 Lua 环境。执行脚本的常用命令为 EVAL。
+
+--------------------------------------------------------------------------------
+
+Redis 服务器
+
+info 
+Redis Bgsave 命令
+client list
+client kill 127.0.0.1:33637
+dbsize
+debug object ss
+
+FLUSHALL 
+monitor 实时打印出 Redis 服务器接收到的命令，调试用
+
+slowlog smembers 1
+
+slowlog len
+
+CONFIG GET dir
+CONFIG get requirepass
+
+#Redis 性能测试
+
+./redis-benchmark -n 10000 -q
+
+config get maxclients
+
+Redis 管道技术 #https://www.runoob.com/redis/redis-pipelining.html
+
+--------------------------------------------------------------------------------
+redis提供了两种持久化的方式，分别是RDB（Redis DataBase）和AOF（Append Only File）。
+
+RDB，简而言之，就是在不同的时间点，将redis存储的数据生成快照并存储到磁盘等介质上；
+
+AOF，则是换了一个角度来实现持久化，那就是将redis执行过的所有写指令记录下来，在下次redis重新启动时，只要把这些写指令从前到后再重复执行一遍，就可以实现数据恢复了。

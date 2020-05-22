@@ -1,0 +1,141 @@
+
+
+vi /etc/profile
+
+#golang
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=/vagrant/golang
+
+source /etc/profile
+
+
+在命令行输入 gofmt –w program.go 会格式化该源文件的代码然后将格式化后的代码覆盖原始内容（如果不加参数 -w 则只会打印格式化后的结果而不重写文件）；gofmt -w *.go 会格式化并重写所有 Go 源文件；gofmt map1 会格式化并重写 map1 目录及其子目录下的所有 Go 源文件。
+
+gofmt 也可以通过在参数 -r 后面加入用双引号括起来的替换规则实现代码的简单重构，规则的格式：<原始内容> -> <替换内容>。
+
+实例：gofmt -r '(a) -> a' –w *.go
+上面的代码会将源文件中没有意义的括号去掉。
+gofmt –r 'A.Func1(a,b) -> A.Func2(b,a)' –w *.go
+上面的代码会将源文件中符合条件的函数的参数调换位置。
+
+
+go doc package 获取包的文档注释，例如：go doc fmt 会显示使用 godoc 生成的 fmt 包的文档注释。
+
+godoc -http=:6060，然后使用浏览器打开 http://localhost:6060 后，你就可以看到本地文档浏览服务器提供的页面。
+
+
+go run main.go
+go build main.go
+./main
+
+
+如同其它一些编程语言中的类库或命名空间的概念，每个 Go 文件都属于且仅属于一个包。一个包可以由许多以 .go 为扩展名的源文件组成，因此文件名和包名一般来说都是不相同的。
+
+你必须在源文件中非注释的第一行指明这个文件属于哪个包，如：package main。package main表示一个可独立执行的程序，每个 Go 应用程序都包含一个名为 main 的包。
+
+一个应用程序可以包含不同的包，而且即使你只使用 main 包也不必把所有的代码都写在一个巨大的文件里：你可以用一些较小的文件，并且在每个文件非注释的第一行都使用 package main 来指明这些文件都属于 main 包。如果你打算编译包名不是为 main 的源文件，如 pack1，编译后产生的对象文件将会是 pack1.a 而不是可执行程序。另外要注意的是，所有的包名都应该使用小写字母。
+
+
+可见性规则
+
+当标识符（包括常量、变量、类型、函数名、结构字段等等）以一个大写字母开头，如：Group1，那么使用这种形式的标识符的对象就可以被外部包的代码所使用（客户端程序需要先导入这个包），这被称为导出（像面向对象语言中的 public）；标识符如果以小写字母开头，则对包外是不可见的，但是他们在整个包的内部是可见并且可用的（像面向对象语言中的 private ）。
+
+函数
+
+func FunctionName (a typea, b typeb) typeFunc
+
+func add(a int, b int) int {
+	return a + b
+}
+
+func functionName(parameter_list) (return_value_list) {
+   …
+}
+
+只有当某个函数需要被外部包调用的时候才使用大写字母开头，并遵循 Pascal 命名法；否则就遵循骆驼命名法，即第一个单词的首字母小写，其余单词的首字母大写。
+
+
+变量
+声明变量的一般形式是使用 var 关键字：var identifier type。
+变量的命名规则遵循骆驼命名法，即首个单词小写，每个新单词的首字母大写，例如：numShips 和 startDate。
+
+但如果你的全局变量希望能够被外部包所使用，则需要将首个单词的首字母也大写（第 4.2 节：可见性规则）
+
+函数体初始化变量：a := 50 或 b := false
+
+var a, b, c int
+a, b, c := 5, 7, "abc"
+
+果你想要交换两个变量的值，则可以简单地使用 a, b = b, a。
+
+空白标识符 _ 也被用于抛弃值，如值 5 在：_, b = 5, 7 中被抛弃。 相当于unset
+
+Go 对于值之间的比较有非常严格的限制，只有两个类型相同的值才可以进行比较
+
+https://github.com/unknwon/the-way-to-go_ZH_CN/blob/master/eBook/04.5.md
+运算符
+位左移 <<：
+
+
+指针和引用的相同点和不同点
+
+https://blog.csdn.net/metheir/article/details/59081828
+
+(1) 指针：指针是一个变量，只不过这个变量存储的是一个地址，指向内存的一个存储单元，即指针是一个实体；
+而引用跟原来的变量实质上是同一个东西，只不过是原变量的一个别名而已(不是实体，指向变量的地址)
+
+
+
+函数:
+函数重载（function overloading）指的是可以编写多个同名函数，只要它们拥有不同的形参与/或者不同的返回值，在 Go 里面函数重载是不被允许的。这将导致一个编译错误：
+
+
+如果需要申明一个在外部定义的函数，你只需要给出函数名与函数签名，不需要给出函数体：
+
+func flushICache(begin, end uintptr) // implemented externally
+
+函数也可以以申明的方式被使用，作为一个函数类型，就像：
+
+type binOp func(int, int) int
+
+空白符（blank identifier） 空白符用来匹配一些不需要的值，然后丢弃掉
+
+
+####
+
+所以建议维护着请求量较大，遇到瓶颈项目的同学可以尝试使用golang改善!
+
+https://www.php.cn/be/go/421167.html
+
+https://segmentfault.com/a/1190000017054285
+
+
+https://segmentfault.com/a/1190000016951628?utm_source=tag-newest
+
+
+# 函数和方法的区别
+
+函数将变量作为参数：Function1(recv)
+方法在变量上被调用：recv.Method1()
+
+https://github.com/unknwon/the-way-to-go_ZH_CN/blob/master/eBook/10.6.md
+
+
+Get "https://proxy.golang.org/github.com/shie  timeout 解决go包管理代理网址无法访问
+go env -w GOPROXY=https://goproxy.cn
+
+go get github.com/beego/bee
+
+go mod开启和关闭
+
+go env -w GO111MODULE=on 打开
+go env -w GO111MODULE=off 关闭
+
+https://www.cnblogs.com/linguoguo/p/8651442.html
+
+sudo yum update nss curl
+
+
+
+
+export PATH=$PATH:/vagrant/golang/bin

@@ -1,0 +1,43 @@
+elastic search
+
+yum search java | grep -i --color JDK
+
+注意：不能以root用户运行elasticsearch
+
+groupadd es
+useradd -g es elasticSearch
+
+/etc/group文件包含所有组
+/etc/shadow和/etc/passwd系统存在的所有用户名
+cat /etc/group
+
+
+chown elasticSearch:es -R elasticsearch  
+
+su elasticSearch
+/vagrant/elasticsearch/bin/elasticsearch -d -p /vagrant/elasticsearch/pid
+
+curl http://localhost:9200/
+curl 'localhost:9300'
+
+
+./elasticsearch-plugin install mobz/elasticsearch-head  
+
+composer require --prefer-dist yiisoft/yii2-elasticsearch
+
+"yiisoft/yii2-elasticsearch": "~2.0.0"
+
+
+curl -X GET "http://localhost:9200/_cat/health?v"
+
+curl -X GET "localhost:9200/_cat/nodes?v"
+
+curl -X GET "localhost:9200/_cat/indices?v"
+
+curl -X PUT "localhost:9200/customer?pretty"
+
+curl -X GET "localhost:9200/_cat/indices?v"
+
+curl -X PUT "localhost:9200/customer/_doc/1?pretty" -H 'Content-Type: application/json' -d'{"name": "John Doe", "age" : 21, "sex":"male"}'
+
+curl -X GET "localhost:9200/customer/_doc/1?pretty"

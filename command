@@ -29,7 +29,9 @@ systemctl enable iptables.service
 vim /etc/sysconfig/iptables 
 
 systemctl restart iptables.service
+systemctl stop iptables.service
 
+sudo firewall-cmd --state
 
 -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
 
@@ -99,7 +101,12 @@ git init --bare #远程建立裸仓
 
 使用 git init --bare <repo> 可以创建一个裸仓库，并且这个仓库是可以被正常 clone 和 push 更新的， 裸仓库不包含工作区，所以并不会存在在裸仓库上直接提交变更的情况。
 
+
 git remote add origin git@github.com:wuyuanwuhui/golang.git
+git checkout master
+git pull
+git fetch --all
+
 git add -A
 git commit -m "add new files"
 git push -u origin master
@@ -124,7 +131,7 @@ git push到GitHub的时候遇到! [rejected] master -> master (non-fast-forward)的问题
 git 强制拉取远程代码覆盖本地 
 
 git fetch --all 
-git reset --hard origin/master
+git reset --hard origin/develop
 git pull
 
 smartgit
@@ -140,9 +147,17 @@ pecl install zip
 pecl channel-update pecl.php.net
 
 composer config -g repo.packagist composer https://packagist.phpcomposer.com
-composer config -g --unset repos.packagist
 
+#解除镜象
+composer config -g --unset repos.packagist
 composer config -l
+
+composer create-project --prefer-dist yiisoft/yii2-app-advanced app
+
+composer require yiisoft/yii2-elasticsearch
+
+
+composer require --prefer-dist yiisoft/yii2-elasticsearch:"~2.0.0"
 
 -------------------------------------------------------------------------------------------
 
@@ -302,3 +317,6 @@ SET FOREIGN_KEY_CHECKS=0;
 
 
 php yii genitem/run --search-path='backend/modules'  use-cache=0
+
+
+解决yii2 资源文件不自动更新而是出现乱码的问题，直接删除文件刷新一下再重新建立后才行
