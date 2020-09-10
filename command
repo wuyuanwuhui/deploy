@@ -17,6 +17,16 @@ rpm -ivh https://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-
 
 rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
 
+127.0.0.1_2
+
+127.0.0.1
+
+2222
+
+vagrant
+
+vagrant
+
 # 防火墙
 
 $ systemctl stop firewalld.service 
@@ -35,16 +45,12 @@ sudo firewall-cmd --state
 
 -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
 
+
+
 yum list --enablerepo=remi --enablerepo=remi-php72 | grep php72
 
 yum install --enablerepo=remi --enablerepo=remi-php72 php php-opcache php-pecl-apcu php-devel php-mbstring php-mcrypt php-mysqlnd php-pecl-xdebug php-pdo php-pear php-fpm php-cli php-xml php-bcmath php-process php-gd php-common php-json php-imap php-pecl-redis php-pecl-memcached php-pecl-mongodb
 
-
---------------------- 
-作者：我是大愚 
-来源：CSDN 
-原文：https://blog.csdn.net/hel12he/article/details/51107236 
-版权声明：本文为博主原创文章，转载请附上博文链接！
 
 systemctl start php-fpm
 systemctl enable php-fpm 
@@ -79,13 +85,13 @@ ssh-keygen -t rsa -C "2263xxxxxx@qq.com"
 
 ll /root/.ssh
 
-github add ssh key # 添加ssh key
+# github add ssh key # 添加ssh key
 
 git config --global user.name "Wuyuanwuhui"
 git config --global user.email 2263xxxxxx@qq.com
 
 
-github add ssh key
+# github add ssh key
 
 测试ssh key是否成功，使用命令“ssh -T git@github.com”，如果出现You’ve successfully authenticated, but GitHub does not provide shell access 。这就表示已成功连上github。
 

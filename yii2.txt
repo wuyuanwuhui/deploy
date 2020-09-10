@@ -1,0 +1,14 @@
+   // yii2手动安装扩展，https://www.yiichina.com/doc/guide/2.0/structure-extensions
+   // vendor/yiisoft/extensions.php
+
+   // added by self
+   'yiisoft/yii2-elasticsearch' =>
+    array (
+        'name' => 'yiisoft/yii2-elasticsearch',
+        'version' => '2.0.0',
+        'alias' =>
+            array (
+                '@yii/elasticsearch' => $vendorDir . '/yiisoft/yii2-elasticsearch',
+            ),
+    ),
+

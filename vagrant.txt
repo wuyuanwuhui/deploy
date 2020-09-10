@@ -1,0 +1,221 @@
+相信自己 相信自己的智商 情商
+
+昨晚不知为什么 电脑关机的时候没有正常关闭vagrant,导致第二天起来重启vagrant 出现异常关机 报文件找不到，
+
+于是我把vitualbox里面异常文件删除，再次vagrant up 结果是新的虚拟环境了，以前所安装的nginx php 全部没有
+
+于是我想了想发现 C:\Users\Administrator\VirtualBox VMs\work_default_1542813113588_51146 文件夹下有 work_default_1542813113588_51146.vbox.tmp 是 昨晚那个关机时间点留下的，于是我复制了一份并保存为work_default_1542813113588_51146.vbox 然后在vitualbox里面重新注册 用的是 work_default_1542813113588_51146.vbox 再次启动就可以了
+
+vagrant package --base work_default_1542813113588_51146
+
+work_default_1542813113588_51146
+
+vagrant box add work_1146 D:/work/package.box
+
+
+-------------------------------------------------------------------------------------------
+
+vagrant box add centos7 D:/iso/CentOS-7-x86_64-Vagrant-2004_01.VirtualBox.box
+
+vagrant init centos7
+
+vagrant up
+
+
+# vagrant共享目录失败 安装插件
+
+vagrant plugin install vagrant-vbguest
+
+vagrant vbguest
+
+default: Rsyncing folder: /cygdrive/d/work2/ => /vagrant 这个有问题
+
+还是需要这个   config.vm.synced_folder "D:/work2", "/home/vagrant" 设置才生效
+
+# 由于vagrant 利用 rsync 同步太慢了所以禁用vagrant的默认共享目录
+config.vm.synced_folder ".","/vagrant",disabled:true 
+
+-------------------------------------------------------------------------------------------
+
+xshell 无法使用密码登录
+
+https://blog.csdn.net/gleaming_shen/article/details/80860493
+
+要想使用密码登录可以修改/etc/ssh/sshd_conf中的PasswordAuthentication no改为PasswordAuthentication yes
+
+vi /etc/ssh/sshd_config
+
+然后重启sshd服务(service sshd restart)。
+
+-------------------------------------------------------------------------------------------
+
+vagrant up 启动同步文件太慢 ，请使用 vitualbox 启动 并设置系统内存和cpu大
+
+如果更新设置请使用 vagrant reload 重新加载文件，再次启动虚拟机
+
+-------------------------------------------------------------------------------------------
+
+nginx:
+
+rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+yum install nginx 
+systemctl start nginx 
+systemctl enable nginx
+
+# iptables防火墙
+systemctl stop firewalld.service
+#防止开机启动
+systemctl disable firewalld.service 
+
+安装iptables
+yum install iptables-services
+
+#启动iptables防火墙
+systemctl start iptables.service 
+systemctl enable iptables.service
+
+systemctl stop iptables.service 
+systemctl disable iptables.service
+
+vi /etc/sysconfig/iptables
+
+# nginx 403 问题
+
+发现403问题 排除权限问题 还是403问题 原来是 selinux 问题
+
+/usr/sbin/sestatus		查看状态为enable
+vi /etc/selinux/config
+将SELINUX=enforcing改为 SELINUX=disabled
+重启机器即可
+
+ http://127.0.0.1/
+-------------------------------------------------------------------------------------------
+# PHP7.0的安装
+
+# centos配置epel和remi源
+yum install epel-release
+#wget http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+#rpm -Uvh remi-release-7.rpm
+
+安装epel与remi源 安装epel，epel是Fedora小组维护的一个软件仓库项目，为RHEL/CentOS提供他们默认不提供的软件包
+rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+remi源种包含最新的php相关信息，如：php7、mysql等，因此为了便捷获取php7的最新信息，也需要安装一下这个源。
+
+rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+rpm -ivh https://mirrors.tuna.tsinghua.edu.cn/remi/enterprise/remi-release-7.rpm
+
+vi /etc/yum.repos.d/remi.repo
+#将其中 [remi] 下的enabled=0改为1，保存退出，配置完成。
+
+# https://blog.csdn.net/chuci8044/article/details/100613513
+# 添加阿里云 
+yum-config-manager --add-repo  http://mirrors.aliyun.com/repo/Centos-7.repo
+
+# install php73
+yum list --enablerepo=remi --enablerepo=remi-php73 | grep php73
+
+yum list | grep php73
+
+yum install --enablerepo=remi --enablerepo=remi-php73 php php-opcache php-pecl-apcu php-devel php-mbstring php-mcrypt php-mysqlnd php-pecl-xdebug php-pdo php-pear php-fpm php-cli php-xml php-bcmath php-process php-gd php-common php-json php-imap php-pecl-redis php-pecl-memcached php-pecl-mongodb php-intl php-zip php-curl
+
+# 安装过程中可能由于网络卡，可以多试几次
+
+# 
+systemctl start php-fpm
+systemctl enable php-fpm 
+systemctl reload php-fpm
+
+# nginx.conf php
+
+location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_pass 127.0.0.1:9000;
+        try_files $uri =404;
+    }
+
+wget http://127.0.0.1
+
+-------------------------------------------------------------------------------------------
+
+# Mariadb的安装
+yum install mariadb-server
+systemctl start mariadb
+systemctl enable mariadb
+
+
+# MariaDB的安全配置
+
+MariaDB默认root密码为空，我们需要设置一下，执行脚本：
+sudo mysql_secure_installation
+root : vagrant2018
+
+-------------------------------------------------------------------------------------------
+
+# 安装composer
+
+php -r "copy('https://install.phpcomposer.com/installer', 'composer-setup.php');"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+sudo mv composer.phar /usr/local/bin/composer
+
+composer config -g repo.packagist composer https://packagist.phpcomposer.com
+
+
+# git
+
+# git 安装使用
+yum install git
+ssh-keygen -t rsa -C "245@qq.com"
+ll /root/.ssh
+# github add ssh key # 添加ssh key
+
+cat id_rsa.pub
+
+git config --global user.name "Wuyuanwuhui"
+git config --global user.email 245@qq.com
+
+ssh -T git@github.com
+
+-------------------------------------------------------------------------------------------
+
+
+sudo dd if=/dev/zero of=/EMPTY bs=1M
+sudo rm -f /EMPTY
+
+"D:\Program Files\Oracle\VirtualBox"
+
+# C:\Users\Administrator\VirtualBox VMs\work_default_1599662637456_22805
+
+VBoxManage clonehd "C:\Users\Administrator\VirtualBox VMs\work_default_1599662637456_22805\centos-7-1-1.x86_64.vmdk" "cloned.vdi" --format vdi
+
+VBoxManage modifyhd cloned.vdi --compact
+
+VBoxManage clonehd "cloned.vdi" "compressed.vmdk" --format vmdk
+
+
+VBoxManage internalcommands sethduuid "C:\Users\Administrator\VirtualBox VMs\work_default_1599662637456_22805\centos-7-1-1.x86_64.vmdk" e3dd812c-d15b-4f16-8437-2e1e769bfe2f
+
+e3dd812c-d15b-4f16-8437-2e1e769bfe2f
+
+e3dd812c-d15b-4f16-8437-2e1e769bfe2f
+
+In use by VMs:  work_default_1599662637456_22805 (UUID: 0ac6c482-d3d8-42bb-ba69-0039253a7ff0)
+
+
+There was an error while executing `VBoxManage`, a CLI used by Vagrant
+for controlling VirtualBox. The command and stderr is shown below.
+
+Command: ["startvm", "0ac6c482-d3d8-42bb-ba69-0039253a7ff0", "--type", "headless
+"]
+
+Stderr: VBoxManage.exe: error: UUID {9e42dbba-b0af-47a5-bb21-8c7f490eb4f6} of th
+e medium 'C:\Users\Administrator\VirtualBox VMs\work_default_1599662637456_22805
+\centos-7-1-1.x86_64.vmdk' does not match the value {e3dd812c-d15b-4f16-8437-2e1e769bfe2f} stored in the media registry ('C:\Users\Administrator\.VirtualBox\Vir
+tualBox.xml')
+VBoxManage.exe: error: Details: code E_FAIL (0x80004005), component MediumWrap,
+interface IMedium
+
+
+vboxmanage showhdinfo "C:\Users\Administrator\VirtualBox VMs\work_default_1599662637456_22805\centos-7-1-1.x86_64.vmdk"

@@ -1,0 +1,313 @@
+docker是利用Linux内核虚拟机化技术（LXC），提供轻量级的虚拟化，以便隔离进程和资源。LXC不是硬件的虚拟化，而是Linux内核的级别的虚拟机化，相对于传统的虚拟机，节省了很多硬件资源。
+
+docker是基于linux内核的虚拟化技术，并不是硬件的虚拟化，进程隔离
+
+LXC是利用内核namespace技术，进行进程隔离。其中pid, net, ipc, mnt, uts 等namespace将container的进程, 网络, 消息, 文件系统和hostname 隔离开。
+
+
+mirrors.aliyun.com
+
+docker 是进程隔离的形成的容器, 对于部署起来非常方便。
+
+有了Docker，我们在搭环境的时候，跟以前的方式就不一样了。
+
+之前：在开发环境构建出了一个war包，想跑到Linux下运行。我们得先在Linux下载好Java、Tomcat、MySQL，配置好对应的环境变量，将war包丢到Tomcat的webapps文件夹下，才能跑起来。
+现在：在Linux下直接拉取一份镜像(各种环境都配好了)，将镜像运行起来，把war包丢进去就好了。移植性非常强
+
+Docker系统有两个程序：docker服务端和docker客户端。其中docker服务端是一个服务进程，管理着所有的容器。docker客户端则扮演着docker服务端的远程控制器，可以用来控制docker的服务端进程。大部分情况下，docker服务端和客户端运行在一台机器上
+
+
+Docker 架构
+
+镜像（Image）: 操作系统
+容器（Container）：进程
+仓库（Repository）：代码
+
+
+Docker 使用客户端-服务器 (C/S) 架构模式，使用远程API来管理和创建Docker容器。
+
+镜像就是上面说的集装箱,仓库就是超级码头,容器就是我们运行程序的地方.docker运行程序的过程就是去仓库把镜像拉到本地,然后用一条命令把镜像运行起来变成容器.
+
+build:构建,就是构建镜像.
+
+ship:运输,运输镜像,从仓库和主机运输.
+
+run:运行的镜像就是一个容器.
+
+build,ship,run和镜像,仓库,容器是一一对应的.
+————————————————
+版权声明：本文为CSDN博主「逆袭的小学生」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/q610376681/article/details/90483576
+
+
+sudo yum remove docker \
+                  docker-client \
+                  docker-client-latest \
+                  docker-common \
+                  docker-latest \
+                  docker-latest-logrotate \
+                  docker-logrotate \
+                  docker-engine
+
+
+
+
+ sudo yum install -y yum-utils \
+  device-mapper-persistent-data \
+  lvm2
+
+ sudo yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+
+sudo yum install docker-ce docker-ce-cli containerd.io
+
+yum list docker-ce --showduplicates | sort -r
+
+sudo yum install docker-ce-19.03.0 docker-ce-cli-19.03.0 containerd.io
+
+sudo systemctl start docker
+
+systemctl enable docker
+
+sudo docker run hello-world
+
+docker pull centos:latest
+
+docker images
+
+
+systemctl daemon-reload 
+systemctl restart docker
+
+
+
+docker pull centos:centos7
+
+
+docker run centos:centos7 /bin/echo "Hello world"
+
+docker run -i -t centos:centos7 /bin/bash 运行交互式的容器
+
+docker run -d centos:centos7 /bin/sh -c "while true; do echo hello world; sleep 1; done" 启动容器（后台模式）
+
+docker run -itd --name centos7-test centos:centos7 /bin/bash
+
+docker exec -it d1bfb93e48d7 /bin/bash  # enter in , exit not stop container
+
+docker stop 357c283b8204
+
+docker image ls
+
+docker ps -as  查看所有容器
+
+------------------------------------------------------------------------------------------------
+docker search php
+
+docker run --name nginx-test -p 8081:80 -d nginx:stable
+
+127.0.0.1:8081
+
+
+
+
+docker exec -t nginx-test netstat -an | grep LISTEN 
+
+docker HTTP request sent, awaiting response... Read error (Connection reset by peer) in headers.
+Retrying.
+
+
+docker run -d  --privileged=true  -v /app:/app -p 5000:5000  bde01d9ed6eb dotnet /app/WebApplication1.dll
+
+docker run -d --net="host"  --privileged=true -v /app:/app -p 5000:5000 bde01d9ed6eb dotnet /app/WebApplication1.dll
+
+docker run -d --privileged=true --name nginx-test -p 8081:80 -d nginx:stable
+
+
+curl  -v  127.0.0.1
+
+docker pull php:7.3-fpm
+
+docker run --name  myphp-fpm -v /vagrant/www:/www  -d php:7.3-fpm
+
+docker run --name php-nginx -p 127.0.0.1:8083:80 -d --privileged=true \
+    -v /vagrant/www:/usr/share/nginx/html:ro \
+    -v ~/nginx/conf/conf.d:/etc/nginx/conf.d:ro \
+    --link myphp-fpm:php \
+    nginx:stable
+
+
+sudo docker run -d -p 8081:80 --name php-nginx nginx:stable 
+
+sudo docker run --privileged=true  --net=host --name nginx2 nginx:stable
+
+
+
+docker: Error response from daemon: driver failed programming external connectivity on endpoint php-nginx (059e3330af3ec37cb51e50a5f4948b8d8ae72b83b7c92ccb55a08b40667afce7):  (iptables failed: iptables --wait -t nat -A DOCKER -p tcp -d 0/0 --dport 8083 -j DNAT --to-destination 172.17.0.2:80 ! -i docker0: iptables: No chain/target/match by that name.
+ (exit status 1)).
+
+ 解决方法：重启docker
+systemctl restart docker
+
+
+docker exec -t php-nginx netstat -an | grep LISTEN | grep 80
+
+docker exec -t php-nginx curl -L http://localhost
+
+docker logs -f bf08b7f2cd89
+
+docker exec -it php-nginx /bin/bash -c "netstat -antlp |grep 80"
+
+宿主机和容器之间的互访问问题
+
+http://127.0.0.1:8081
+
+http://localhost:8081
+
+http://192.168.0.6:8081
+
+
+docker inspect php-nginx |grep IPAddres
+ping 172.17.0.2
+PING 172.17.0.2 (172.17.0.2) 56(84) bytes of data.
+From 172.17.0.1 icmp_seq=1 Destination Host Unreachable
+
+原来是他妈的不在一个网段害的
+
+
+ping 10.0.2.15
+
+route add 172.17.0.0 mask 255.255.0.0 10.0.2.15 
+route add -net 172.17.0.0 gw 10.0.2.15 netmask 255.255.0.0
+route add -net 172.17.0.1 gw 10.0.2.15 netmask 255.255.255.0 
+
+none模式
+
+docker run -itd --net=none --name=container1 docker.io/centos
+
+sudo docker run -d -p 8081:80 --name php-nginx nginx:stable 
+
+docker network ls
+docker run -itd --net="host" --name nginx2 nginx:stable  
+
+如果用host模式的话是可以的 但是就是不能指定端口了
+
+
+192.168.0.1 # gw
+
+yum install bridge-utils -y
+
+
+192.168.0.1/24
+
+------------------------------------------------------------------------------
+
+service docker stop
+ip link set dev docker0 down
+brctl delbr docker0
+brctl addbr bridge0
+
+ip addr add 192.168.0.1/24 dev bridge0
+ip link set dev bridge0 up
+vi /etc/sysconfig/docker
+
+docker inspect --format='{{.NetworkSettings.IPAddress}}' 72478ff21f45
+
+ip link set dev bridge0 down
+brctl delbr bridge0
+
+ll /etc/sysconfig/network-scripts
+
+brctl show
+
+10.0.2.2
+
+sudo docker run -d -p 8081:80 --name php-nginx nginx:stable 
+
+---------------------------------------------------------------------------------------
+
+VagrantFile 设置静态IP
+vagrant reload 如果出问题 则 halt 再次 up
+ifconfig 查看eth是否有可用的网卡
+vitualbox 设置桥接网卡, 关键就是这一步
+通过静态IP ssh
+ifconfig 查看
+
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        ether 08:00:27:de:0e:0e  txqueuelen 1000  (Ethernet)
+        RX packets 873  bytes 155756 (152.1 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 615  bytes 79751 (77.8 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+eth1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.0.10  netmask 255.255.255.0  broadcast 192.168.0.255
+        inet6 fe80::a00:27ff:fe70:450c  prefixlen 64  scopeid 0x20<link>
+        ether 08:00:27:70:45:0c  txqueuelen 1000  (Ethernet)
+        RX packets 739  bytes 690673 (674.4 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 226  bytes 36250 (35.4 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+很显然eth0没有用，可以直接拿来做网桥连接器
+
+docker run -itd --net=none --name test1 centos:centos7 /bin/bash
+docker run -itd --net=none --name test2 centos:centos7 /bin/bash
+pipework br0 test1 192.168.0.52/24@192.168.0.1
+pipework br0 test2 192.168.0.53/24@192.168.0.1
+
+docker exec -it 2b01b2ee4279 /bin/bash
+
+brctl addif br0 eth0  #eth0 如上 一定是未用的没有 ip形式
+
+brctl show
+
+ping 192.168.0.52
+ping 192.168.0.53
+宿主机
+ping 192.168.0.10
+
+全部互通
+
+---------------------------------------------------------------------------------------
+docker inspect test1 |grep IPAddres
+ 192.168.56.1
+
+brctl addif br0 eth0
+brctl show
+
+ip link set dev br0 down
+ip link set dev docker0 down
+ip link set dev eth0 down
+
+brctl delbr br0
+brctl delbr docker0
+
+
+http://192.168.0.10/ # vitualbox 网络设置 网桥连接方式
+
+ll /etc/sysconfig/network-scripts/
+
+route -n
+
+
+route add default gw 192.168.0.1
+
+vagrant halt
+
+
+192.168.0.10
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+docker build .
+docker build -t jpress:latest .
+
+docker ps -a查看所有容器
+docker rm $(docker ps -aq)删除没在运行的容器
+
+elasticsearch

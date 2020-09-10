@@ -14,13 +14,18 @@ https://blog.csdn.net/hel12he/article/details/51069269
 rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
 
-yum list --enablerepo=remi --enablerepo=remi-php72 | grep php72
+yum list --enablerepo=remi --enablerepo=remi-php73 | grep php73
 
-yum install --enablerepo=remi --enablerepo=remi-php72 php php-opcache php-pecl-apcu php-devel php-mbstring php-mcrypt php-mysqlnd php-pecl-xdebug php-pdo php-pear php-fpm php-cli php-xml php-bcmath php-process php-gd php-common php-json php-imap php-pecl-redis php-pecl-memcached php-pecl-mongodb php-intl
-
+yum install --enablerepo=remi --enablerepo=remi-php73 php php-opcache php-pecl-apcu php-devel php-mbstring php-mcrypt php-mysqlnd php-pecl-xdebug php-pdo php-pear php-fpm php-cli php-xml php-bcmath php-process php-gd php-common php-json php-imap php-pecl-redis php-pecl-memcached php-pecl-mongodb php-intl php-zip php-curl
 
 
 root vagrant
+
+------------------------------------------------------
+
+安装 mariadb
+
+https://blog.csdn.net/hel12he/article/details/51107236
 
 mysql -uroot -p
 
@@ -111,13 +116,6 @@ yjkj4603@zpm%#
 update user set password=Password('yjkj4603@zpm%#') Where user='root';
 
 flush privileges;
-
-
-------------------------------------------------------
-
-yum list --enablerepo=remi --enablerepo=remi-php72 | grep php72
-
-yum install --enablerepo=remi --enablerepo=remi-php72 php php-opcache php-pecl-apcu php-devel php-mbstring php-mcrypt php-mysqlnd php-pecl-xdebug php-pdo php-pear php-fpm php-cli php-xml php-bcmath php-process php-gd php-common php-json php-imap php-pecl-redis php-pecl-memcached php-pecl-mongodb
 
 ------------------------------------------------------
 
