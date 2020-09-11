@@ -15,9 +15,19 @@ vagrant box add work_1146 D:/work/package.box
 
 -------------------------------------------------------------------------------------------
 
+# 安装一个新的虚拟机
+
 vagrant box add centos7 D:/iso/CentOS-7-x86_64-Vagrant-2004_01.VirtualBox.box
 
 vagrant init centos7
+
+#vagrantfile
+  
+  config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", guest: 3306, host: 3308
+  config.vm.network "forwarded_port", guest: 8081, host: 8081
+  config.vm.network "forwarded_port", guest: 9200, host: 9200
+
 
 vagrant up
 
@@ -33,6 +43,7 @@ default: Rsyncing folder: /cygdrive/d/work2/ => /vagrant 这个有问题
 还是需要这个   config.vm.synced_folder "D:/work2", "/home/vagrant" 设置才生效
 
 # 由于vagrant 利用 rsync 同步太慢了所以禁用vagrant的默认共享目录
+
 config.vm.synced_folder ".","/vagrant",disabled:true 
 
 -------------------------------------------------------------------------------------------
@@ -180,6 +191,7 @@ ssh -T git@github.com
 
 -------------------------------------------------------------------------------------------
 
+# 压缩vmdk文件但是发现压缩后再转换成vmdk 启动提示文件空间太小无法挂载文件夹，无语
 
 sudo dd if=/dev/zero of=/EMPTY bs=1M
 sudo rm -f /EMPTY
@@ -197,12 +209,7 @@ VBoxManage clonehd "cloned.vdi" "compressed.vmdk" --format vmdk
 
 VBoxManage internalcommands sethduuid "C:\Users\Administrator\VirtualBox VMs\work_default_1599662637456_22805\centos-7-1-1.x86_64.vmdk" e3dd812c-d15b-4f16-8437-2e1e769bfe2f
 
-e3dd812c-d15b-4f16-8437-2e1e769bfe2f
-
-e3dd812c-d15b-4f16-8437-2e1e769bfe2f
-
 In use by VMs:  work_default_1599662637456_22805 (UUID: 0ac6c482-d3d8-42bb-ba69-0039253a7ff0)
-
 
 There was an error while executing `VBoxManage`, a CLI used by Vagrant
 for controlling VirtualBox. The command and stderr is shown below.
@@ -216,6 +223,5 @@ e medium 'C:\Users\Administrator\VirtualBox VMs\work_default_1599662637456_22805
 tualBox.xml')
 VBoxManage.exe: error: Details: code E_FAIL (0x80004005), component MediumWrap,
 interface IMedium
-
 
 vboxmanage showhdinfo "C:\Users\Administrator\VirtualBox VMs\work_default_1599662637456_22805\centos-7-1-1.x86_64.vmdk"
