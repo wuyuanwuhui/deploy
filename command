@@ -180,6 +180,9 @@ yii migrate/create create_post --fields="title:string,body:text"
 
 ./yii migrate --migration-path=@yii/rbac/migrations
 
+User: admin
+Password: @newsnow.com.cn@
+
 -------------------------------------------------------------------------------------------
 
 composer create-project --prefer-dist yiisoft/yii2-app-advanced app 2.0

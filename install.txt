@@ -57,6 +57,10 @@ yum-config-manager --add-repo  http://mirrors.aliyun.com/repo/Centos-7.repo
 由于用的是mariadb 所以启动应该这样
 systemctl restart mariadb.service
 
+# 清屏
+
+system clear
+
 ------------------------------------------------------
 
 create user 'develop'@'10.0.2.2' identified by '2020#todo!up';
