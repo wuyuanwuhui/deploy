@@ -2,6 +2,8 @@ elastic search
 
 yum search java | grep -i --color JDK
 
+yum install java-latest-openjdk.x86_64
+
 注意：不能以root用户运行elasticsearch
 
 groupadd es

@@ -3,8 +3,8 @@
 vi /etc/profile
 
 #golang
-export PATH=$PATH:/usr/local/go/bin
-export GOPATH=/vagrant/golang
+export PATH=$PATH:/home/vagrant/go/bin
+export GOPATH=/home/vagrant/golang
 
 source /etc/profile
 

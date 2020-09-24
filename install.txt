@@ -277,3 +277,20 @@ location ~ \.php$ {
         fastcgi_pass 127.0.0.1:9000;
         try_files $uri =404;
     }
+
+
+------------------------------------------------------
+
+Another app is currently holding the yum lock; waiting for it to exit
+
+
+
+composer require yiisoft/yii2-sphinx
+
+
+yiisoft/yii2-authclient "~2.1.0"
+
+yiisoft/yii2-mongodb
+
+yiisoft/yii2-apidoc
+yiisoft/yii2-httpclient "*"

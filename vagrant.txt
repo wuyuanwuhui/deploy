@@ -195,6 +195,9 @@ ssh -T git@github.com
 
 yum install net-tools , 直接yum install ifconfig 是不行的
 
+hd
+hd@nzi.com
+111111
 
 
 -------------------------------------------------------------------------------------------
